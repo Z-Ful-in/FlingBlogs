@@ -3,13 +3,11 @@ package org.example.flingblogs.controller;
 
 import org.example.flingblogs.model.User;
 import org.example.flingblogs.service.UserService;
-import org.example.flingblogs.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.Map;;
 
 @RestController
 @RequestMapping("/api/users")
@@ -17,8 +15,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private JwtUtil jwtUtil;
 
     @PostMapping("/register")
     public Map<String, Object> register(@RequestBody Map<String, String> request) {
@@ -39,11 +35,10 @@ public class UserController {
         String username = request.get("username");
         String password = request.get("password");
 
-        Optional<User> userOpt = userService.login(username, password);
+        String token = userService.login(username, password);
         Map<String, Object> response = new HashMap<>();
 
-        if (userOpt.isPresent()) {
-            String token = jwtUtil.generateToken(username);
+        if (token != null) {
             response.put("message", "登录成功");
             response.put("token", token);
         }else {

@@ -3,6 +3,7 @@ package org.example.flingblogs.service;
 
 import org.example.flingblogs.model.User;
 import org.example.flingblogs.repository.UserRepository;
+import org.example.flingblogs.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,9 @@ import java.util.Optional;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -28,11 +32,11 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public Optional<User> login(String username, String password){
+    public String login(String username, String password){
         Optional<User> userOpt = userRepository.findByUsername(username);
         if(userOpt.isPresent() && passwordEncoder.matches(password, userOpt.get().getPassword())) {
-            return userOpt;
+            return jwtUtil.generateToken(username);
         }
-        return Optional.empty();
+        return null;
     }
 }
