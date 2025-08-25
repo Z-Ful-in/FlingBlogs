@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "articles")
 @Data
@@ -23,7 +25,7 @@ public class Article {
     private String content;
 
     @Column(updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private String createdAt;
+    private LocalDateTime createdAt;
 
     // foreign key
     @ManyToOne(fetch = FetchType.LAZY)
