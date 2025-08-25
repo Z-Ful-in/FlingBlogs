@@ -52,8 +52,6 @@ public class ArticleService {
     // 根据ID查看文章，私密文章只有作者能看
     public Optional<Article> getArticleById(String token, Long id){
         String username = jwtUtil.extractUsername(token);
-        Optional<User> userOpt = userRepository.findByUsername(username);
-        if(userOpt.isEmpty()) throw new RuntimeException("当前用户不存在");
 
         Optional<Article> articleOpt = articleRepository.findById(id);
         if(articleOpt.isEmpty()) return Optional.empty();
