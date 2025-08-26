@@ -18,6 +18,7 @@ public class UserController {
 
     @PostMapping("/register")
     public Map<String, Object> register(@RequestBody Map<String, String> request) {
+        System.out.println("Hello Register");
         String username = request.get("username");
         String password = request.get("password");
         String email = request.get("email");
