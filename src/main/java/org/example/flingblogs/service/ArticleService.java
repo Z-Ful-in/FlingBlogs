@@ -5,7 +5,6 @@ import org.example.flingblogs.model.Article;
 import org.example.flingblogs.model.User;
 import org.example.flingblogs.repository.ArticleRepository;
 import org.example.flingblogs.repository.UserRepository;
-import org.example.flingblogs.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,13 +20,13 @@ public class ArticleService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private JwtUtil jwtUtil;
-
     // 创建文章需要作者权限
-    public Article createArticle(String token, Article article) {
-        String username = jwtUtil.extractUsername(token);
-        Optional<User> userOpt = userRepository.findByUsername(username);
+    public Article createArticle(String username, Article article) {
+        Optional<User> userOpt = Optional.empty();
+
+        if(username != null && !username.isEmpty()) {
+            userOpt = userRepository.findByUsername(username);
+        }
 
         if (userOpt.isEmpty()) {
             throw new RuntimeException("User not found");
@@ -40,9 +39,13 @@ public class ArticleService {
         return articleRepository.findByIsPrivateFalse();
     }
 
-    public List<Article> getUserArticles(String token){
-        String username = jwtUtil.extractUsername(token);
-        Optional<User> userOpt = userRepository.findByUsername(username);
+    public List<Article> getUserArticles(String username){
+        Optional<User> userOpt = Optional.empty();
+
+        if(username != null && !username.isEmpty()) {
+            userOpt = userRepository.findByUsername(username);
+        }
+
         if (userOpt.isEmpty()) {
             throw new RuntimeException("User not found");
         }
@@ -50,9 +53,7 @@ public class ArticleService {
     }
 
     // 根据ID查看文章，私密文章只有作者能看
-    public Optional<Article> getArticleById(String token, Long id){
-        String username = jwtUtil.extractUsername(token);
-
+    public Optional<Article> getArticleById(String username, Long id){
         Optional<Article> articleOpt = articleRepository.findById(id);
         if(articleOpt.isEmpty()) return Optional.empty();
 
@@ -65,15 +66,11 @@ public class ArticleService {
         return Optional.of(article);
     }
 
-    public void deleteArticle(String token, Long id){
+    public void deleteArticle(String username, Long id){
         Optional<Article> article = articleRepository.findById(id);
         if(article.isEmpty()){
             throw new RuntimeException("文章不存在");
         }
-
-        String username = jwtUtil.extractUsername(token);
-        Optional<User> userOpt = userRepository.findByUsername(username);
-        if(userOpt.isEmpty()) throw new RuntimeException("当前用户不存在");
         if(!article.get().getUser().getUsername().equals(username)){
             throw new RuntimeException("无权删除此文章");
         }

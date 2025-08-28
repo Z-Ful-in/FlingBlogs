@@ -5,6 +5,8 @@ import org.example.flingblogs.model.Article;
 import org.example.flingblogs.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,9 +20,10 @@ public class ArticleController {
 
     @PostMapping
     public ResponseEntity<Article> createArticle(
-            @RequestHeader ("Authorization") String token,
+            @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody Article article){
-        Article createdArticle = articleService.createArticle(token.substring(7), article);
+        String username = (userDetails != null) ? userDetails.getUsername(): null; // 本质还是从SecurityContextHolder中获取用户名
+        Article createdArticle = articleService.createArticle(username, article);
         return ResponseEntity.ok(createdArticle);
     }
 
@@ -32,25 +35,27 @@ public class ArticleController {
 
     @GetMapping("/me")
     public ResponseEntity<List<Article>> getMyArticles(
-            @RequestHeader ("Authorization") String token){
-        List<Article> articles = articleService.getUserArticles(token.substring(7));
+           @AuthenticationPrincipal UserDetails userDetails) {
+        String username = (userDetails != null) ? userDetails.getUsername() : null;
+        List<Article> articles = articleService.getUserArticles(username);
         return ResponseEntity.ok(articles);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Article> getArticle( // 未登录也可以查看公开文章
-            @RequestHeader (value="Authorization",required = false) String token,
-            @PathVariable Long id){
-        return articleService.getArticleById(token.substring(7), id)
+    public ResponseEntity<Article> getArticle(@PathVariable Long id,
+                                              @AuthenticationPrincipal UserDetails userDetails) { // 未登录也可以查看公开的文章
+        String username = (userDetails != null) ? userDetails.getUsername() : null;
+        return articleService.getArticleById(username, id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, String>> deleteArticle(
-            @RequestHeader ("Authorization") String token,
+            @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long id){
-        articleService.deleteArticle(token.substring(7), id);
+        String username = (userDetails != null) ? userDetails.getUsername(): null;
+        articleService.deleteArticle(username, id);
         return ResponseEntity.ok(Map.of("message", "文章删除成功"));
     }
 
