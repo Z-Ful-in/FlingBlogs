@@ -43,6 +43,11 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.BAD_REQUEST, "参数验证失败", detail);
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Map<String, Object>> handleRuntimeException(RuntimeException ex){
+        return buildResponse(HttpStatus.BAD_REQUEST, "请求错误", ex.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex){
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "服务器内部错误", ex.getMessage());
