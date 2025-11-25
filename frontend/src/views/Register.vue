@@ -8,27 +8,43 @@ const password = ref("")
 const email = ref("")
 const router = useRouter()
 
-const register = async () => {
+const handleRegister = async () => {
   try {
     const response = await userApi.register({
       username: username.value,
       password: password.value,
       email: email.value
     })
-    alert("register success")
-    router.push('/login')
+    if (response.status === 200) {
+      alert('注册成功！去登录吧')
+      router.push('/login')
+    }
   }catch (error) {
-    alert("register failed")
-    console.error(error)
+    alert('注册失败：' + (error.response?.data?.message || '未知错误'))
   }
 }
 
 </script>
 
 <template>
+  <div class="auth-container">
+    <h2>注册 FlingBlogs</h2>
+    <input v-model="email" type="email" placeholder="Email" />
+    <input v-model="username" type="text" placeholder="用户名" />
+    <input v-model="password" type="password" placeholder="密码" />
+    <button @click="handleRegister">注册</button>
+    <p>已有账号?<router-link to="/login">去登录</router-link></p>
+  </div>
 
 </template>
 
 <style scoped>
-
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 300px;
+  margin: 50px auto;
+  gap: 10px;
+}
+input, button { padding: 8px; }
 </style>

@@ -1,4 +1,4 @@
-import request from './request.js'
+import request from '../utils/request.js'
 
 const userApi = {
     login(data){
@@ -8,6 +8,10 @@ const userApi = {
     register(data){
         return request.post('/user/register', data)
     },
+
+    getMyArticles(){
+        return request.get('/articles/me')
+    }
 }
 
 export default userApi
