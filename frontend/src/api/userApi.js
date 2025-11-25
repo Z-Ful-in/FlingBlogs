@@ -9,3 +9,5 @@ const userApi = {
         return request.post('/user/register', data)
     },
 }
+
+export default userApi
