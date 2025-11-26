@@ -33,8 +33,8 @@ const handleLogin = async () => {
 <template>
   <div class="auth-container">
     <h2>登录</h2>
-    <input v-model="form.username" placeholder="用户名" />
-    <input v-model="form.password" type="password" placeholder="密码" />
+    <input v-model="username" placeholder="用户名" />
+    <input v-model="password" type="password" placeholder="密码" />
     <button @click="handleLogin">登录</button>
     <p>没有账号? <router-link to="/register">去注册</router-link></p>
   </div>
