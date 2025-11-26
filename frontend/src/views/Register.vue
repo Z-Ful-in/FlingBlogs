@@ -15,8 +15,12 @@ const handleRegister = async () => {
       password: password.value,
       email: email.value
     })
-    if (response.status === 200) {
+    if (response && response.message === '注册成功') {
       alert('注册成功！去登录吧')
+      router.push('/login')
+    } else {
+      // 如果后端逻辑有变化，这里作为一个兜底
+      alert(response.message || '注册成功')
       router.push('/login')
     }
   }catch (error) {
