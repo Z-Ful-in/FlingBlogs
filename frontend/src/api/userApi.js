@@ -2,11 +2,11 @@ import request from '../utils/request.js'
 
 const userApi = {
     login(data){
-        return request.post('/user/login', data)
+        return request.post('/users/login', data)
     },
 
     register(data){
-        return request.post('/user/register', data)
+        return request.post('/users/register', data)
     },
 
     getMyArticles(){
