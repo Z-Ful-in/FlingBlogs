@@ -9,15 +9,19 @@ const router = useRouter()
 
 const handleLogin = async () => {
   try{
-    const res = await userApi.login(username.value, password.value)
+    const res = await userApi.login(
+        {
+          username: username.value,
+          password: password.value
+        })
 
     // 后端成功时返回token和message, 失败时返回message
-    if(res.data.token){
+    if(res.token){
       // 存token
-      localStorage.setItem("token", res.data.token)
+      localStorage.setItem("token", res.token)
       localStorage.setItem("username", username)
 
-      alert(res.data.message)
+      alert(res.message)
       router.push('/home')
     } else {
       alert( res.data.message)
