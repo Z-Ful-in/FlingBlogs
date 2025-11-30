@@ -10,7 +10,7 @@ const myArticles = ref([])
 const fetchMyArticles = async () => {
   try {
     const res = await userApi.getMyArticles();
-    myArticles.value = res.data;
+    myArticles.value = res;
   }catch (error) {
     console.log("获取我的文章失败", error);
     if(error.response && error.response.status === 403) {

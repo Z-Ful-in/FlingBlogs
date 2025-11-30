@@ -19,12 +19,12 @@ const handleLogin = async () => {
     if(res.token){
       // 存token
       localStorage.setItem("token", res.token)
-      localStorage.setItem("username", username)
+      localStorage.setItem("username", username.value)
 
       alert(res.message)
       router.push('/home')
     } else {
-      alert( res.data.message)
+      alert( res.message)
     }
   }catch (error){
     alert("请求出错")
