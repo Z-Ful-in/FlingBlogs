@@ -11,6 +11,10 @@ const userApi = {
 
     getMyArticles(){
         return request.get('/articles/me')
+    },
+
+    writeArticle(data){
+        return request.post('/articles', data)
     }
 }
 
