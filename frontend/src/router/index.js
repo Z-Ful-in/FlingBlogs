@@ -1,22 +1,42 @@
 import { createRouter, createWebHistory} from "vue-router";
+import MainLayout from '@/layout/MainLayout.vue'
 
-import Home from "../views/Home.vue"
-import Login from "../views/Login.vue"
-import Register from "../views/Register.vue"
-import WriteArticle from "../views/WriteArticle.vue";
-
-
-const routes = [
-    { path: "/", redirect: "/home" },
-    { path: "/home", component: Home },
-    { path: "/login", component: Login },
-    { path: "/register", component: Register },
-    { path: "/article", component: WriteArticle },
-]
 
 const router = createRouter({
-    history: createWebHistory(),
-    routes
+    history: createWebHistory(import.meta.env.BASE_URL),
+    routes: [
+        {
+            path: '/',
+            redirect: '/login' // 默认跳转登录
+        },
+        // 登录注册不需要导航栏，直接放在根目录下
+        {
+            path: '/login',
+            name: 'login',
+            component: () => import('../views/Login.vue')
+        },
+        {
+            path: '/register',
+            name: 'register',
+            component: () => import('../views/Register.vue')
+        },
+        {
+            path: '/',
+            component: MainLayout,
+            children: [
+                {
+                    path: 'home', // 访问 /home
+                    name: 'home',
+                    component: () => import('../views/Home.vue')
+                },
+                {
+                    path: 'write', // 访问 /write
+                    name: 'write',
+                    component: () => import('../views/WriteArticle.vue')
+                }
+            ]
+        }
+    ]
 })
 
 export default router
