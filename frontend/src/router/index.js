@@ -20,9 +20,10 @@ const router = createRouter({
             name: 'register',
             component: () => import('../views/Register.vue')
         },
+        // 需要导航栏的页面，放在 MainLayout 的 children 下
         {
             path: '/',
-            component: MainLayout,
+            component: MainLayout,// 使用主布局
             children: [
                 {
                     path: 'home', // 访问 /home
